@@ -12,11 +12,13 @@
   (let [[system-deps home-deps project-deps] config-files
         project-deps (or project-deps "deps.edn")]
     (fn [i]
-      (if (string? i)
-        i
-        ({:install system-deps
-          :user home-deps
-          :project project-deps} i)))))
+      (clojure.string/replace (if (string? i)
+                                i
+                                ({:install system-deps
+                                  :user home-deps
+                                  :project project-deps} i))
+                              #"/c" "c:"))))
+
 
 (defn canonicalise-dep-locs
   "Returns a seq of absolute java.io.File given a seq of dep-refs.  Any
@@ -85,5 +87,5 @@
          (read-deps $)
          (absolute-deps $ root)))
   ([env project]
-    (make-deps env/exists? reader/read-deps env project)))
+   (make-deps env/exists? reader/read-deps env project)))
 
