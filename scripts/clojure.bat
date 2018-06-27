@@ -1,0 +1,1 @@
+@bash -l clojure %*
