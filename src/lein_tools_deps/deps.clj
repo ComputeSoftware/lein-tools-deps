@@ -12,12 +12,12 @@
   (let [[system-deps home-deps project-deps] config-files
         project-deps (or project-deps "deps.edn")]
     (fn [i]
-      (clojure.string/replace (if (string? i)
-                                i
-                                ({:install system-deps
-                                  :user home-deps
-                                  :project project-deps} i))
-                              #"/c" "c:"))))
+      (clojure.string/replace-first (if (string? i)
+                                      i
+                                      ({:install system-deps
+                                        :user home-deps
+                                        :project project-deps} i))
+                              #"/c/" "c:/"))))
 
 
 (defn canonicalise-dep-locs
