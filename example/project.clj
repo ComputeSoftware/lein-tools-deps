@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   
   
-  :plugins [[lein-tools-deps "0.4.2-SNAPSHOT"]]
+  :plugins [[compute/lein-tools-deps "0.4.2-SNAPSHOT"]]
 
   :middleware [lein-tools-deps.plugin/resolve-dependencies-with-deps-edn]
 
@@ -23,7 +23,9 @@
   ;; The default project will include :deps along with :extra-deps
   ;; defined with the :async alias.
   :lein-tools-deps/config {:config-files [:install :user :project]
-                           :resolve-aliases [:async]} 
+                           :resolve-aliases [:async]
+                           :clojure-executables ["C:/Users/dave/bin/clojure.bat"]
+                           :path-replacement [#"/c/" "c:/"]}
   
   ;; You can configure lein-tools-deps to :resolve-aliases defined in
   ;; your deps.edn file.  You can do this, as demonstrated here,
@@ -40,7 +42,7 @@
                                        :main foo.classpath-alias}}
  
 
-  :main foo.core
+  :main foo.core)
   
-  )
+
 
