@@ -2,7 +2,8 @@
   (:require [clojure.java.io :as io]
             [lein-tools-deps.file-attributes :as file-attributes]
             [lein-tools-deps.env :as env]
-            [clojure.tools.deps.alpha.reader :as reader]))
+            [clojure.tools.deps.alpha.reader :as reader]
+            [clojure.string :as s]))
 
 (defn make-dep-loc-lookup
   "Returns a function mapping from a loc(ation)
@@ -11,14 +12,19 @@
   [{:keys [config-files]} path-replacement]
   (let [[system-deps home-deps project-deps] config-files
         project-deps (or project-deps "deps.edn")
-        [drive-regex drive-path] path-replacement]
+        os (.toLowerCase (System/getProperty "os.name"))
+        [_ [drive-regex drive-path]] (->> path-replacement
+                                          (filter (fn [[k v]] (some? (s/index-of os k))))
+                                          first)]
     (fn [i]
-      (clojure.string/replace-first (if (string? i)
-                                      i
-                                      ({:install system-deps
-                                        :user home-deps
-                                        :project project-deps} i))
-                              drive-regex drive-path))))
+      (let [p (if (string? i)
+                i
+                ({:install system-deps
+                  :user home-deps
+                  :project project-deps} i))]
+        (if drive-regex
+          (s/replace-first p drive-regex drive-path)
+          p)))))
 
 
 (defn canonicalise-dep-locs

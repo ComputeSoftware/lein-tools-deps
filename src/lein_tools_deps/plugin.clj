@@ -22,7 +22,7 @@
          (lein-project/resolve-deps deps)
          (lein-project/make-classpath deps))))
   ([project]
-    (apply-middleware env/exists? reader/read-deps (env/clojure-env project) project)))
+   (apply-middleware env/exists? reader/read-deps (env/clojure-env project) project)))
 
 (def defunct-loc-keys #{:system :home})
 
@@ -39,18 +39,18 @@
   (when (some defunct-loc-keys config-files)
     (lein/warn "Your :lein-tools-deps/config :config-files contains defunct location keys please update to the supported ones" valid-loc-keys)
     (lein/exit 1))
-  
+
   (cond
     (seq config-files)
 
     (if (every? loc-or-string? config-files)
       (apply-middleware project)
-      (do (lein/warn  "Every element in :lein-tools-deps/config :config-files must either be a file-path string or one of the location keys" valid-loc-keys)
+      (do (lein/warn "Every element in :lein-tools-deps/config :config-files must either be a file-path string or one of the location keys" valid-loc-keys)
           (lein/exit 1)))
-      
+
     (not (map? config))
 
-    (do (lein/warn  ":lein-tools-deps/config must specify a configuration map.")
+    (do (lein/warn ":lein-tools-deps/config must specify a configuration map.")
         (lein/exit 1))
 
     ;; pass through
