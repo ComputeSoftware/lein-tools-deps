@@ -25,7 +25,7 @@
   :lein-tools-deps/config {:config-files [:install :user :project]
                            :resolve-aliases [:async]
                            :clojure-executables ["C:/Users/dave/bin/clojure.bat"]
-                           :path-replacement [#"/c/" "c:/"]}
+                           :path-replacement [#"/mnt/c/" "c:/"]}
   
   ;; You can configure lein-tools-deps to :resolve-aliases defined in
   ;; your deps.edn file.  You can do this, as demonstrated here,
