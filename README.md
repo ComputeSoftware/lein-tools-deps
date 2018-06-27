@@ -4,6 +4,36 @@ A leiningen plugin that lets you
 share [tools.deps.alpha](https://github.com/clojure/tools.deps.alpha)
 `deps.edn` dependencies with your leiningen project build.
 
+## NOTE
+
+This fork is a hack to enable use of lein-tools-deps on a Windows system, 
+where Clojure is installed on WSL but Cursive runs under Windows. 
+Regard as a "good enough" solution until there exist Windows 
+versions of the clj/clojure scripts and other tools are updated
+to properly handle this setup.
+
+Steps to use:
+
+- Clone this repo, and make a local build with `lein install`.
+- Copy the `scripts/clojure.bat` file to somewhere on your Windows
+path.
+- If you plan to use git dependencies on a remote repo requiring
+SSH, be sure you have [SSD keys set up with pageant](https://www.digitalocean.com/community/tutorials/how-to-use-pageant-to-streamline-ssh-key-authentication-with-putty). The SSH setup for
+Windows as documented on Github (using git bash) in not sufficient.
+- If you intend to use the `:install` and `:user` options to specify
+`:config-files`, you'll need the corresponding `deps.edn` files to 
+reside on the Windows file system as opposed the default Linux install
+directories. In WSL, you would then need to set the `CLJ_CONFIG`
+environment variable to point to the directory containing 
+your user-level `deps.edn`.
+- See `example/project.clj` for usage. You will need to configure
+the `:clojure-executables` to contain the Windows path to the location
+where you placed `clojure.bat`. The `:path-replacement` value specifies
+a regex and string that is used in a call to `clojure.string/replace-first`
+to change paths on a WSL mount to a Windows drive to Windows format.
+So `:path-replacement [#"/mnt/c/" "c:/"]` would change 
+`/mnt/c/Users/dave/.clojure/deps.edn` to `c:/Users/dave/.clojure/deps.edn`.
+
 ## Why use leiningen and deps.edn?
 
 The Clojure 1.9.0 command line tools bring a host of new benefits to
