@@ -8,23 +8,24 @@
   "Returns a function mapping from a loc(ation)
   keyword (either :install, :user or :project) to a file
   location.  If the value is a string it is returned as is."
-  [{:keys [config-files]}]
+  [{:keys [config-files]} path-replacement]
   (let [[system-deps home-deps project-deps] config-files
-        project-deps (or project-deps "deps.edn")]
+        project-deps (or project-deps "deps.edn")
+        [drive-regex drive-path] path-replacement]
     (fn [i]
       (clojure.string/replace-first (if (string? i)
                                       i
                                       ({:install system-deps
                                         :user home-deps
                                         :project project-deps} i))
-                              #"/c/" "c:/"))))
+                              drive-regex drive-path))))
 
 
 (defn canonicalise-dep-locs
   "Returns a seq of absolute java.io.File given a seq of dep-refs.  Any
   relative dep-refs will be made absolute relative to project-root."
-  [env project-root dep-refs]
-  (let [location->dep-path (make-dep-loc-lookup env)]
+  [env project-root dep-refs path-replacement]
+  (let [location->dep-path (make-dep-loc-lookup env path-replacement)]
     (->> dep-refs
          (map location->dep-path)
          (map io/file)
@@ -80,9 +81,9 @@
 
 (defn make-deps
   "Reads and merges all of the deps-ref, returning a single deps map"
-  ([exists? read-deps env {:keys [root] {:keys [config-files]} :lein-tools-deps/config}]
+  ([exists? read-deps env {:keys [root] {:keys [config-files path-replacement]} :lein-tools-deps/config}]
    (as-> config-files $
-         (canonicalise-dep-locs env root $)
+         (canonicalise-dep-locs env root $ path-replacement)
          (filter exists? $)
          (read-deps $)
          (absolute-deps $ root)))
